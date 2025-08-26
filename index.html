@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Para Ti Mi Princesa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #ffebee, #f8bbd0);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            width: 35px;
+            height: 32px;
+            pointer-events: none;
+        }
+        
+        .heart:before,
+        .heart:after {
+            content: '';
+            width: 22px;
+            height: 35px;
+            background: linear-gradient(45deg, #ff4081, #ff6bb3);
+            box-shadow: 0 0 15px rgba(255, 64, 129, 0.7);
+            border-radius: 22px 22px 0 0;
+            position: absolute;
+            left: 17px;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+            filter: drop-shadow(0 2px 8px rgba(255, 64, 129, 0.4));
+        }
+        
+        .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 90%;
+            max-width: 500px;
+            margin: 40px auto;
+        }
+        
+        .envelope-wrapper {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+        
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 250px;
+            top: 50px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #f5f5f5;
+            border-radius: 5px;
+            z-index: 2;
+        }
+        
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #e91e63;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            padding-top: 160px;
+            text-align: center;
+            color: white;
+            z-index: 3;
+            transition: opacity 0.5s ease;
+        }
+        
+        .envelope-front h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .envelope-front p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        
+        .envelope-front .instruction {
+            position: relative;
+            bottom: 0px;
+            margin-top: 20px;
+            font-style: italic;
+            animation: pulse 2s infinite;
+        }
+        
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 250px solid transparent;
+            border-right: 250px solid transparent;
+            border-top: 150px solid #d81b60;
+            transform-origin: 50% 0%;
+            transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 4;
+        }
+        
+        .letter {
+            position: absolute;
+            width: 80%;
+            height: 280px;
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            z-index: 5;
+            top: 70px;
+            left: 10%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            transform: translateY(120px) scale(0.9);
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow-y: auto;
+            color: #555;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 25px, #fce4ec 25px, #fce4ec 26px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+        }
+        
+        .letter h2 {
+            color: #e91e63;
+            margin-bottom: 20px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 28px;
+        }
+        
+        .letter p {
+            line-height: 1.8;
+            margin-bottom: 18px;
+            text-align: left;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        .signature {
+            margin-top: 30px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 24px;
+            color: #e91e63;
+            text-align: right;
+            width: 100%;
+        }
+        
+        .opening .flap {
+            transform: translateX(-50%) rotateX(180deg);
+        }
+        
+        .opening .letter {
+            transform: translateY(-80px) scale(1);
+            opacity: 1;
+            z-index: 10;
+        }
+        
+        .open .flap {
+            transform: translateX(-50%) rotateX(180deg);
+        }
+        
+        .open .letter {
+            transform: translateY(-80px) scale(1);
+            opacity: 1;
+            z-index: 10;
+        }
+        
+        .closing .flap {
+            transform: translateX(-50%) rotateX(180deg);
+        }
+        
+        .closing .letter {
+            transform: translateY(40px) scale(0.9);
+            opacity: 0.7;
+            z-index: 5;
+        }
+        
+        .envelope-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 8;
+            top: 0;
+            left: 0;
+        }
+        
+        .burst-heart {
+            position: absolute;
+            width: 25px;
+            height: 23px;
+            pointer-events: none;
+        }
+        
+        .burst-heart:before,
+        .burst-heart:after {
+            content: '';
+            width: 16px;
+            height: 25px;
+            background: linear-gradient(45deg, #ff4081, #ff6bb3);
+            box-shadow: 0 0 15px rgba(255, 64, 129, 0.9);
+            border-radius: 16px 16px 0 0;
+            position: absolute;
+            left: 12px;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+            filter: drop-shadow(0 2px 8px rgba(255, 64, 129, 0.6));
+        }
+        
+        .burst-heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #e91e63;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            display: none;
+            z-index: 15;
+            transition: all 0.3s ease;
+        }
+        
+        .close-button:hover {
+            background: #c2185b;
+            transform: scale(1.1);
+        }
+        
+        .open .close-button,
+        .opening .close-button,
+        .closing .close-button {
+            display: block;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-15px) rotate(10deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.6;
+            }
+        }
+        
+        @keyframes heartBurst {
+            0% {
+                transform: translate(0, 0) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--end-x), var(--end-y)) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+                overflow-y: auto;
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 100%;
+                margin: 20px auto;
+                padding: 0 10px;
+            }
+            
+            .envelope-wrapper {
+                height: 280px;
+                width: 100%;
+                max-width: 350px;
+                margin: 0 auto;
+            }
+            
+            .envelope {
+                height: 180px;
+                top: 40px;
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .envelope-front {
+                padding: 15px;
+                padding-top: 90px;
+            }
+            
+            .envelope-front h1 {
+                font-size: 22px;
+                margin-bottom: 15px;
+            }
+            
+            .envelope-front p {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+            
+            .envelope-front .instruction {
+                font-size: 13px;
+                bottom: 15px;
+            }
+            
+            .letter {
+                height: 320px;
+                width: 90%;
+                left: 5%;
+                top: 50px;
+                transform: translateY(90px) scale(0.9);
+                padding: 20px 15px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .letter h2 {
+                font-size: 20px;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+            
+            .opening .letter,
+            .open .letter {
+                transform: translateY(-70px) scale(1);
+            }
+            
+            .closing .letter {
+                transform: translateY(40px) scale(0.9);
+            }
+            
+            .letter p {
+                font-size: 13px;
+                line-height: 1.6;
+                margin-bottom: 15px;
+            }
+            
+            .signature {
+                font-size: 18px;
+                margin-top: 20px;
+            }
+            
+            .flap {
+                border-left: 175px solid transparent;
+                border-right: 175px solid transparent;
+                border-top: 80px solid #d81b60;
+            }
+            
+            .close-button {
+                width: 35px;
+                height: 35px;
+                font-size: 20px;
+                top: 8px;
+                right: 8px;
+            }
+            
+            .hearts-container .heart {
+                width: 25px;
+                height: 23px;
+            }
+            
+            .hearts-container .heart:before,
+            .hearts-container .heart:after {
+                width: 16px;
+                height: 25px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .envelope-wrapper {
+                height: 260px;
+                max-width: 300px;
+            }
+            
+            .envelope {
+                height: 160px;
+                max-width: 300px;
+            }
+            
+            .envelope-front h1 {
+                font-size: 20px;
+            }
+            
+            .envelope-front p {
+                font-size: 13px;
+            }
+            
+            .letter {
+                height: 300px;
+                padding: 15px 12px;
+            }
+            
+            .letter h2 {
+                font-size: 18px;
+            }
+            
+            .letter p {
+                font-size: 12px;
+            }
+            
+            .signature {
+                font-size: 16px;
+            }
+            
+            .flap {
+                border-left: 150px solid transparent;
+                border-right: 150px solid transparent;
+                border-top: 70px solid #d81b60;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-container" id="hearts-container"></div>
+    
+    <div class="container">
+        <div class="envelope-wrapper" id="envelope-wrapper">
+            <div class="envelope">
+                <div class="envelope-back"></div>
+                <div class="envelope-front">
+                    <h1>Para Ti, Mi Morenaza divina</h1>
+                    <p>Te hice esta carta con mucho cariño</p>
+                    <p class="instruction">Haz clic en el sobre para tu sorpresa</p>
+                </div>
+                <div class="flap"></div>
+                <div class="envelope-hearts" id="envelope-hearts"></div>
+            </div>
+            <div class="letter">
+                <button class="close-button" id="close-button">×</button>
+                <h2>Mi amor,</h2>
+                <p>Le agradecí a Dios por haberte conocido, a Daniela por habernos presentado y por aquel 15 de mayo cuando te escribí, porque desde ese día comenzó nuestra historia.</p>
+                <p>Eres una mujer hermosa y valiosa, gracias por todo lo que has hecho por mí y por el cariño sincero que siempre me demuestras.</p>
+                <p>Te quiero mucho, mi morenaza divina, cada día te pienso y te extraño con el corazón.</p>
+                <p>Besos, recuerda siempre que tienes a alguien que haría cualquier cosa por ti, solo quiero que tengas paz y seas feliz, amor.</p>
+                <div class="signature">Con Amor Tu Ingeniero ♥</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isOpen = false;
+        let isAnimating = false;
+        
+        // Crear corazones animados de fondo
+        function createBackgroundHearts() {
+            const heartsContainer = document.getElementById('hearts-container');
+            const numHearts = 20;
+            
+            for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // Posición aleatoria
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                
+                // Tamaño aleatorio
+                const size = Math.random() * 0.8 + 0.6; // Entre 0.6 y 1.4
+                
+                // Duración de animación aleatoria
+                const duration = Math.random() * 4 + 6;
+                const delay = Math.random() * 5;
+                
+                // Aplicar estilos
+                heart.style.left = `${left}%`;
+                heart.style.top = `${top}%`;
+                heart.style.transform = `scale(${size})`;
+                heart.style.animation = `float ${duration}s ease-in-out infinite`;
+                heart.style.animationDelay = `${delay}s`;
+                
+                // Añadir al contenedor
+                heartsContainer.appendChild(heart);
+            }
+        }
+        
+        // Crear corazones que salen del sobre
+        function createBurstHearts() {
+            const envelopeHearts = document.getElementById('envelope-hearts');
+            envelopeHearts.innerHTML = '';
+            
+            const numHearts = 25;
+            
+            for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('burst-heart');
+                
+                // Posición inicial (centro-arriba del sobre)
+                const startLeft = 45 + Math.random() * 10;
+                const startTop = 10 + Math.random() * 5;
+                
+                // Dirección aleatoria hacia arriba y lados
+                const angle = (Math.random() * Math.PI * 0.8) - (Math.PI * 0.4);
+                const distance = 80 + Math.random() * 120;
+                const endX = Math.sin(angle) * distance;
+                const endY = -Math.abs(Math.cos(angle) * distance) - 50;
+                
+                // Duración aleatoria
+                const duration = 1.2 + Math.random() * 0.8;
+                const delay = Math.random() * 0.4;
+                
+                // Aplicar estilos
+                heart.style.left = `${startLeft}%`;
+                heart.style.top = `${startTop}%`;
+                heart.style.setProperty('--end-x', `${endX}px`);
+                heart.style.setProperty('--end-y', `${endY}px`);
+                heart.style.animation = `heartBurst ${duration}s ease-out forwards`;
+                heart.style.animationDelay = `${delay}s`;
+                
+                // Añadir al contenedor
+                envelopeHearts.appendChild(heart);
+                
+                // Remover después de la animación
+                setTimeout(() => {
+                    if (heart.parentNode) {
+                        heart.parentNode.removeChild(heart);
+                    }
+                }, (duration + delay) * 1000 + 100);
+            }
+        }
+        
+        // Función para abrir el sobre
+        function openEnvelope() {
+            if (!isOpen && !isAnimating) {
+                isAnimating = true;
+                const wrapper = document.getElementById('envelope-wrapper');
+                
+                // Cambiar a sobre abierto
+                wrapper.classList.add('opening');
+                
+                // Crear explosión de corazones cuando empieza a salir la carta
+                setTimeout(() => {
+                    createBurstHearts();
+                }, 600);
+                
+                // Cambiar a estado abierto después de la animación
+                setTimeout(() => {
+                    wrapper.classList.remove('opening');
+                    wrapper.classList.add('open');
+                    isOpen = true;
+                    isAnimating = false;
+                }, 1200);
+            }
+        }
+        
+        // Función para cerrar el sobre
+        function closeEnvelope() {
+            if (isOpen && !isAnimating) {
+                isAnimating = true;
+                const wrapper = document.getElementById('envelope-wrapper');
+                
+                // Añadir clase de cierre para animar la carta entrando
+                wrapper.classList.remove('open');
+                wrapper.classList.add('closing');
+                
+                // Después de que la carta entra, cerrar completamente
+                setTimeout(() => {
+                    wrapper.classList.remove('closing');
+                    isOpen = false;
+                    isAnimating = false;
+                }, 1200);
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('envelope-wrapper').addEventListener('click', function(e) {
+            if (e.target.id !== 'close-button') {
+                openEnvelope();
+            }
+        });
+        
+        document.getElementById('close-button').addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeEnvelope();
+        });
+        
+        // Inicializar
+        window.onload = function() {
+            createBackgroundHearts();
+        };
+    </script>
+</body>
+</html>
